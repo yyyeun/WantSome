@@ -2,8 +2,10 @@ package smu.project_wantsome.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,7 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import smu.project_wantsome.R;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BasicAcitivity {
     private static final String TAG = "MainActivity";
 
     @Override
@@ -28,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        if(user == null) {
+        if (user == null) {
             myStartActivity(SignUpActivity.class);
         } else {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
-                        if(document != null) {
+                        if (document != null) {
                             if (document.exists()) {
                                 Log.d(TAG, "DocumentSnapshot data: " + document.getData());
 
@@ -55,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         findViewById(R.id.logoutButton).setOnClickListener(onClickListener);
+        findViewById(R.id.floatingActionButton).setOnClickListener(onClickListener);
     }
-
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -64,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.logoutButton:
                     FirebaseAuth.getInstance().signOut();
                     myStartActivity(SignUpActivity.class);
+                    break;
+                case R.id.floatingActionButton:
+                    myStartActivity(WritePostActivity.class);
                     break;
             }
         }

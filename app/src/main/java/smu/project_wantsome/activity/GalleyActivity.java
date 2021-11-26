@@ -1,6 +1,7 @@
 package smu.project_wantsome.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import smu.project_wantsome.R;
 import smu.project_wantsome.adapter.GalleryAdapter;
 
-public class GalleyActivity extends AppCompatActivity {
+public class GalleyActivity extends BasicAcitivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
 
@@ -38,23 +39,20 @@ public class GalleyActivity extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
     }
 
-    public static ArrayList<String> getImagesPath(Activity activity) {
+    public ArrayList<String> getImagesPath(Activity activity) {
         Uri uri;
         ArrayList<String> listOfAllImages = new ArrayList<String>();
         Cursor cursor;
-        int column_index_data, column_index_folder_name;
+        int column_index_data;
         String PathOfImage = null;
+
+        // 비디오 추가 -> 11번 강의 6분 ~
         uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        String[] projection = { MediaStore.MediaColumns.DATA, MediaStore.Images.Media.BUCKET_DISPLAY_NAME };
 
-        String[] projection = { MediaStore.MediaColumns.DATA,
-                MediaStore.Images.Media.BUCKET_DISPLAY_NAME };
-
-        cursor = activity.getContentResolver().query(uri, projection, null,
-                null, null);
+        cursor = activity.getContentResolver().query(uri, projection, null, null, null);
 
         column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-        column_index_folder_name = cursor
-                .getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
         while (cursor.moveToNext()) {
             PathOfImage = cursor.getString(column_index_data);
 

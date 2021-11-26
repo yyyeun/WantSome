@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -41,7 +40,7 @@ import java.io.InputStream;
 import smu.project_wantsome.MemberInfo;
 import smu.project_wantsome.R;
 
-public class MemberInitActivity extends AppCompatActivity {
+public class MemberInitActivity extends BasicAcitivity {
     private static final String TAG = "MemberInitActivity";
     private ImageView profileImageView;
     private String profilePath;
@@ -57,8 +56,8 @@ public class MemberInitActivity extends AppCompatActivity {
         profileImageView.setOnClickListener(onClickListener);
 
         findViewById(R.id.checkButton).setOnClickListener(onClickListener);
-        findViewById(R.id.picture).setOnClickListener(onClickListener);
-        findViewById(R.id.gallery).setOnClickListener(onClickListener);
+        findViewById(R.id.imageModify).setOnClickListener(onClickListener);
+        findViewById(R.id.delete).setOnClickListener(onClickListener);
     }
 
     @Override
@@ -98,10 +97,10 @@ public class MemberInitActivity extends AppCompatActivity {
                         cardView.setVisibility(View.VISIBLE);
                     }
                     break;
-                case R.id.picture:
+                case R.id.imageModify:
                     myStartActivity(CameraActivity.class);
                     break;
-                case R.id.gallery:
+                case R.id.delete:
                     if (ContextCompat.checkSelfPermission(MemberInitActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
                             != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(MemberInitActivity.this,

@@ -17,7 +17,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import smu.project_wantsome.R;
 
-public class SignUpActivity extends AppCompatActivity {
+public class SignUpActivity extends BasicAcitivity {
 
     private FirebaseAuth mAuth;
 

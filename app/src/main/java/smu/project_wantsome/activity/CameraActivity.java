@@ -33,7 +33,7 @@ import java.nio.ByteBuffer;
 import smu.project_wantsome.R;
 import smu.project_wantsome.fragment.Camera2BasicFragment;
 
-public class CameraActivity extends AppCompatActivity {
+public class CameraActivity extends BasicAcitivity {
     private Camera2BasicFragment camera2BasicFragment;
 
     /**
