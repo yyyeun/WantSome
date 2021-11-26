@@ -1,10 +1,9 @@
-package smu.project_wantsome;
+package smu.project_wantsome.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +15,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import smu.project_wantsome.R;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -29,10 +30,8 @@ public class MainActivity extends AppCompatActivity {
 
         if(user == null) {
             myStartActivity(SignUpActivity.class);
-        }
-        else {
+        } else {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-
             DocumentReference docRef = db.collection("users").document(user.getUid());
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
