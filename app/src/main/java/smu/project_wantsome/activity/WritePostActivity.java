@@ -2,13 +2,8 @@ package smu.project_wantsome.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.renderscript.ScriptGroup;
-import android.text.InputType;
-import android.util.IntProperty;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,14 +14,10 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.view.menu.ListMenuItemView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -44,9 +35,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 
-import smu.project_wantsome.MemberInfo;
 import smu.project_wantsome.R;
-import smu.project_wantsome.WriteInfo;
+import smu.project_wantsome.PostInfo;
 
 public class WritePostActivity extends BasicAcitivity {
     private static final String TAG = "WritePostActivity";
@@ -188,7 +178,7 @@ public class WritePostActivity extends BasicAcitivity {
                                         successCount++;
                                         if(pathList.size() == successCount){
                                             // 완료
-                                            WriteInfo writeInfo = new WriteInfo(title, contentsList, user.getUid(), new Date());
+                                            PostInfo writeInfo = new PostInfo(title, contentsList, user.getUid(), new Date());
                                             storeUpload(documentReference, writeInfo);
                                         }
                                     }
@@ -202,7 +192,7 @@ public class WritePostActivity extends BasicAcitivity {
                 }
             }
             if (pathList.size() == 0) {
-                WriteInfo writeInfo = new WriteInfo(title, contentsList, user.getUid(), new Date());
+                PostInfo writeInfo = new PostInfo(title, contentsList, user.getUid(), new Date());
                 storeUpload(documentReference, writeInfo);
             }
 
@@ -211,7 +201,7 @@ public class WritePostActivity extends BasicAcitivity {
         }
     }
 
-    private void storeUpload(DocumentReference documentReference, WriteInfo writeInfo){
+    private void storeUpload(DocumentReference documentReference, PostInfo writeInfo){
         documentReference.set(writeInfo)
             .addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override

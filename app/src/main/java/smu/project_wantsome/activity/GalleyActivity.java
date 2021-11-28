@@ -26,9 +26,6 @@ import smu.project_wantsome.R;
 import smu.project_wantsome.adapter.GalleryAdapter;
 
 public class GalleyActivity extends BasicAcitivity {
-    private RecyclerView recyclerView;
-    private RecyclerView.Adapter mAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,11 +64,11 @@ public class GalleyActivity extends BasicAcitivity {
     private void recyclerInit() {
         final int numberOfColumns = 3;
 
-        recyclerView = findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
 
-        mAdapter = new GalleryAdapter(this, getImagesPath(this));
+        RecyclerView.Adapter mAdapter = new GalleryAdapter(this, getImagesPath(this));
         recyclerView.setAdapter(mAdapter);
     }
 
