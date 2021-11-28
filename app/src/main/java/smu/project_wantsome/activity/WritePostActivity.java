@@ -54,6 +54,7 @@ public class WritePostActivity extends BasicAcitivity {
     private ArrayList<String> pathList = new ArrayList<>();
     private LinearLayout parent;
     private RelativeLayout buttonsBackgroundLayout;
+    private RelativeLayout loaderLayout;
     private ImageView selectedImageView;
     private int pathCount, successCount = 0;
 
@@ -64,6 +65,7 @@ public class WritePostActivity extends BasicAcitivity {
 
         parent = findViewById(R.id.contentsLayout);
         buttonsBackgroundLayout = findViewById(R.id.buttonsBackgroundLayout);
+        loaderLayout = findViewById(R.id.loaderLayout);
 
         buttonsBackgroundLayout.setOnClickListener(onClickListener);
         findViewById(R.id.check).setOnClickListener(onClickListener);
@@ -147,6 +149,8 @@ public class WritePostActivity extends BasicAcitivity {
         final String title = ((EditText) findViewById(R.id.titleEditText)).getText().toString();
 
         if (title.length() > 0) {
+            loaderLayout.setVisibility(View.VISIBLE);
+
             ArrayList<String> contentsList = new ArrayList<>();
             user = FirebaseAuth.getInstance().getCurrentUser();
             FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -213,6 +217,7 @@ public class WritePostActivity extends BasicAcitivity {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Log.d(TAG, "DocumentSnapshot successfully written!");
+                    loaderLayout.setVisibility(View.GONE);
                     finish();
                 }
             })
@@ -220,6 +225,7 @@ public class WritePostActivity extends BasicAcitivity {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Log.w(TAG, "Error writing document", e);
+                    loaderLayout.setVisibility(View.GONE);
                 }
             });
     }

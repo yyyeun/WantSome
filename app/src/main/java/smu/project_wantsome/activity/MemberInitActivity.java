@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,6 +44,7 @@ import smu.project_wantsome.R;
 public class MemberInitActivity extends BasicAcitivity {
     private static final String TAG = "MemberInitActivity";
     private ImageView profileImageView;
+    private RelativeLayout loaderLayout;
     private String profilePath;
     private FirebaseAuth mAuth;
     FirebaseUser user;
@@ -52,6 +54,7 @@ public class MemberInitActivity extends BasicAcitivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_member_init);
 
+        loaderLayout = findViewById(R.id.loaderLayout);
         profileImageView = findViewById(R.id.profileImageView);
         profileImageView.setOnClickListener(onClickListener);
 
@@ -87,7 +90,7 @@ public class MemberInitActivity extends BasicAcitivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.checkButton:
-                    profileUpdate();
+                    storageUploader();
                     break;
                 case R.id.profileImageView:
                     CardView cardView = findViewById(R.id.buttonsCardView);
@@ -133,12 +136,14 @@ public class MemberInitActivity extends BasicAcitivity {
         }
     }
 
-    private void profileUpdate() {
+    private void storageUploader() {
         final String name = ((EditText) findViewById(R.id.nameEditText)).getText().toString();
         final String address = ((EditText) findViewById(R.id.addressEditText)).getText().toString();
         final String chat = ((EditText) findViewById(R.id.chatEditText)).getText().toString();
 
         if (name.length() > 0 && address.length() > 0 && chat.length() > 0) {
+            loaderLayout.setVisibility(View.VISIBLE);
+
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReference();
 
@@ -147,7 +152,7 @@ public class MemberInitActivity extends BasicAcitivity {
 
             if(profilePath == null) {
                 MemberInfo memberInfo = new MemberInfo(name, address, chat);
-                uploader(memberInfo);
+                storeUploader(memberInfo);
             } else {
                 try {
                     InputStream stream = new FileInputStream(new File(profilePath));
@@ -167,7 +172,7 @@ public class MemberInitActivity extends BasicAcitivity {
                                 Uri downloadUri = task.getResult();
 
                                 MemberInfo memberInfo = new MemberInfo(name, address, chat, downloadUri.toString());
-                                uploader(memberInfo);
+                                storeUploader(memberInfo);
                             } else {
                                 startToast("회원정보를 보내는데 실패했습니다.");
                             }
@@ -182,13 +187,14 @@ public class MemberInitActivity extends BasicAcitivity {
         }
     }
 
-    private void uploader(MemberInfo memberInfo){
+    private void storeUploader(MemberInfo memberInfo){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").document(user.getUid()).set(memberInfo)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         startToast("회원 정보 등록을 성공하였습니다.");
+                        loaderLayout.setVisibility(View.GONE);
                         finish();
                     }
                 })
@@ -196,6 +202,7 @@ public class MemberInitActivity extends BasicAcitivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         startToast("회원 정보 등록에 실패하였습니다.");
+                        loaderLayout.setVisibility(View.GONE);
                         Log.w(TAG, "Error writing document", e);
                     }
                 });
