@@ -122,7 +122,7 @@ public class MainActivity extends BasicAcitivity {
         }
         @Override
         public void onModify(String id){
-            Log.e("로그", "수정" + id);
+            myStartActivity(WritePostActivity.class, id);
         }
     };
 
@@ -170,6 +170,12 @@ public class MainActivity extends BasicAcitivity {
 
     private void myStartActivity(Class c) {
         Intent intent = new Intent(this, c);
+        startActivity(intent);
+    }
+
+    private void myStartActivity(Class c, String id) {
+        Intent intent = new Intent(this, c);
+        intent.putExtra("id", id);
         startActivity(intent);
     }
 }
