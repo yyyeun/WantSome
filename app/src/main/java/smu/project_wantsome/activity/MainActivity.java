@@ -12,8 +12,11 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,14 +33,18 @@ import java.util.Date;
 
 import smu.project_wantsome.PostInfo;
 import smu.project_wantsome.R;
+import smu.project_wantsome.Util;
 import smu.project_wantsome.adapter.GalleryAdapter;
 import smu.project_wantsome.adapter.MainAdapter;
+import smu.project_wantsome.listener.OnPostListener;
 
 public class MainActivity extends BasicAcitivity {
     private static final String TAG = "MainActivity";
     private FirebaseUser firebaseUser;
     private FirebaseFirestore firebaseFirestore;
-    private RecyclerView recyclerView;
+    private MainAdapter mainAdapter;
+    private ArrayList<PostInfo> postList;
+    private Util util;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,45 +79,52 @@ public class MainActivity extends BasicAcitivity {
             });
         }
 
-        recyclerView = findViewById(R.id.recyclerView);
+        util = new Util(this);
+
+        postList = new ArrayList<>();
+
+        mainAdapter = new MainAdapter(MainActivity.this, postList);
+        mainAdapter.setOnPostListener(onPostListener);
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
         findViewById(R.id.floatingActionButton).setOnClickListener(onClickListener);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        recyclerView.setAdapter(mainAdapter);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        postsUpdate();
+    }
 
-        if (firebaseUser != null) {
-            CollectionReference collectionReference = firebaseFirestore.collection("posts");
-            collectionReference.orderBy("createdAt", Query.Direction.DESCENDING).get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    OnPostListener onPostListener = new OnPostListener() {
+        @Override
+        public void onDelete(String id){
+            Log.e("로그", "삭제" + id);
+            firebaseFirestore.collection("posts").document(id)
+                    .delete()
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                ArrayList<PostInfo> postList = new ArrayList<>();
-
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    Log.d(TAG, document.getId() + " => " + document.getData());
-                                    postList.add(new PostInfo(
-                                            document.getData().get("title").toString(),
-                                            (ArrayList<String>)document.getData().get("contents"),
-                                            document.getData().get("publisher").toString(),
-                                            new Date(document.getDate("createdAt").getTime()),
-                                            document.getId()));
-                                }
-
-                                RecyclerView.Adapter mAdapter = new MainAdapter(MainActivity.this, postList);
-                                recyclerView.setAdapter(mAdapter);
-                            } else {
-                                Log.d(TAG, "Error getting documents: ", task.getException());
-                            }
+                        public void onSuccess(Void aVoid) {
+                            util.showToast("게시글을 삭제하였습니다.");
+                            postsUpdate();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            util.showToast("게시글을 삭제하지 못하였습니다.");
                         }
                     });
         }
-    }
+        @Override
+        public void onModify(String id){
+            Log.e("로그", "수정" + id);
+        }
+    };
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
@@ -126,6 +140,33 @@ public class MainActivity extends BasicAcitivity {
             }
         }
     };
+
+    private void postsUpdate(){
+        if (firebaseUser != null) {
+            CollectionReference collectionReference = firebaseFirestore.collection("posts");
+            collectionReference.orderBy("createdAt", Query.Direction.DESCENDING).get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                postList.clear();
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Log.d(TAG, document.getId() + " => " + document.getData());
+                                    postList.add(new PostInfo(
+                                            document.getData().get("title").toString(),
+                                            (ArrayList<String>)document.getData().get("contents"),
+                                            document.getData().get("publisher").toString(),
+                                            new Date(document.getDate("createdAt").getTime()),
+                                            document.getId()));
+                                }
+                                mainAdapter.notifyDataSetChanged();
+                            } else {
+                                Log.d(TAG, "Error getting documents: ", task.getException());
+                            }
+                        }
+                    });
+        }
+    }
 
     private void myStartActivity(Class c) {
         Intent intent = new Intent(this, c);

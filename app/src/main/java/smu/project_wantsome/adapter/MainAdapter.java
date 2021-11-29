@@ -30,6 +30,7 @@ import java.util.Locale;
 
 import smu.project_wantsome.PostInfo;
 import smu.project_wantsome.R;
+import smu.project_wantsome.listener.OnPostListener;
 
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
@@ -37,33 +38,13 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
     private ArrayList<PostInfo> mDataSet;
     private Activity activity;
     private FirebaseFirestore firebaseFirestore;
+    private OnPostListener onPostListener;
 
     public class MainViewHolder extends RecyclerView.ViewHolder {
         public CardView cardView;
-        public MainViewHolder(Activity activity, CardView v, PostInfo postInfo) {
+        public MainViewHolder(CardView v) {
             super(v);
             cardView = v;
-
-            LinearLayout contentsLayout = cardView.findViewById(R.id.contentsLayout);
-            ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            ArrayList<String> contentsList = postInfo.getContents();
-
-        if(contentsLayout.getChildCount() == 0) {
-            for (int i=0; i<contentsList.size(); i++) {
-                String contents = contentsList.get(i);
-                if(Patterns.WEB_URL.matcher(contents).matches()){
-                    ImageView imageView = new ImageView(activity);
-                    imageView.setLayoutParams(layoutParams);
-                    imageView.setAdjustViewBounds(true);
-                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                    contentsLayout.addView(imageView);
-                } else {
-                    TextView textView = new TextView(activity);
-                    textView.setLayoutParams(layoutParams);
-                    contentsLayout.addView(textView);
-                }
-            }
-        }
         }
     }
 
@@ -71,6 +52,11 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         mDataSet = myDataSet;
         this.activity = activity;
         firebaseFirestore = FirebaseFirestore.getInstance();
+    }
+
+    public void setOnPostListener(OnPostListener onPostListener) {
+        this.onPostListener = onPostListener;
+
     }
 
     @Override
@@ -84,7 +70,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         CardView cardView = (CardView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_post, parent, false);
 
-        final MainViewHolder mainViewHolder = new MainViewHolder(activity, cardView, mDataSet.get(viewType));
+        final MainViewHolder mainViewHolder = new MainViewHolder(cardView);
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,17 +98,32 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         createdAtTextView.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(mDataSet.get(position).getCreatedAt()));
 
         LinearLayout contentsLayout = cardView.findViewById(R.id.contentsLayout);
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         ArrayList<String> contentsList = mDataSet.get(position).getContents();
 
-        for (int i=0; i<contentsList.size(); i++) {
-            String contents = contentsList.get(i);
-            if(Patterns.WEB_URL.matcher(contents).matches()){
-                Glide.with(activity).load(contents).override(1000).thumbnail(0.1f).into((ImageView)contentsLayout.getChildAt(i));
-            } else {
-                ((TextView)contentsLayout.getChildAt(i)).setText(contents);
+        if(contentsLayout.getTag() == null || !contentsLayout.getTag().equals(contentsList)) {
+            Log.e("로그", "태그");
+            contentsLayout.setTag(contentsList);
+            contentsLayout.removeAllViews();
+            if(contentsList.size() > 0) {
+                for (int i=0; i<contentsList.size(); i++) {
+                    String contents = contentsList.get(i);
+                    if(Patterns.WEB_URL.matcher(contents).matches()){
+                        ImageView imageView = new ImageView(activity);
+                        imageView.setLayoutParams(layoutParams);
+                        imageView.setAdjustViewBounds(true);
+                        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                        contentsLayout.addView(imageView);
+                        Glide.with(activity).load(contents).override(1000).thumbnail(0.1f).into(imageView);
+                    } else {
+                        TextView textView = new TextView(activity);
+                        textView.setLayoutParams(layoutParams);
+                        textView.setText(contents);
+                        contentsLayout.addView(textView);
+                    }
+                }
             }
         }
-
     }
 
     @Override
@@ -135,24 +136,14 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
+                String id = mDataSet.get(position).getId();
+
                 switch (menuItem.getItemId()) {
                     case R.id.modify:
+                        onPostListener.onModify(id);
                         return true;
                     case R.id.delete:
-                        firebaseFirestore.collection("posts").document(mDataSet.get(position).getId())
-                                .delete()
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Toast.makeText(activity, "게시글을 삭제하였습니다.", Toast.LENGTH_SHORT).show();
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(activity, "게시글을 삭제하지 못하였습니다.", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                        onPostListener.onDelete(id);
                         return true;
                     default:
                         return false;
