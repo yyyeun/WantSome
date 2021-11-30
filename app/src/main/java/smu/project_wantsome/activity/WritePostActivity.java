@@ -46,9 +46,11 @@ public class WritePostActivity extends BasicAcitivity {
     private RelativeLayout buttonsBackgroundLayout;
     private RelativeLayout loaderLayout;
     private ImageView selectedImageView;
+    private PostInfo postInfo;
     private int pathCount, successCount = 0;
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_post);
@@ -62,6 +64,9 @@ public class WritePostActivity extends BasicAcitivity {
         findViewById(R.id.image).setOnClickListener(onClickListener);
         findViewById(R.id.imageModify).setOnClickListener(onClickListener);
         findViewById(R.id.delete).setOnClickListener(onClickListener);
+
+        postInfo = (PostInfo) getIntent().getSerializableExtra("postInfo");
+        //postInit();
     }
 
     @Override
@@ -82,6 +87,8 @@ public class WritePostActivity extends BasicAcitivity {
 
                     ImageView imageView = new ImageView(WritePostActivity.this);
                     imageView.setLayoutParams(layoutParams);
+                    imageView.setAdjustViewBounds(true);
+                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
                     imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -140,20 +147,14 @@ public class WritePostActivity extends BasicAcitivity {
 
         if (title.length() > 0) {
             loaderLayout.setVisibility(View.VISIBLE);
-
             ArrayList<String> contentsList = new ArrayList<>();
             user = FirebaseAuth.getInstance().getCurrentUser();
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReference();
             FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-            String id = getIntent().getStringExtra("id");
-            DocumentReference dr;
-            if(id == null) {
-                dr = firebaseFirestore.collection("posts").document();
-            } else {
-                dr = firebaseFirestore.collection("posts").document(id);
-            }
-            final DocumentReference documentReference = dr;
+
+            final DocumentReference documentReference = postInfo == null ? firebaseFirestore.collection("posts").document() : firebaseFirestore.collection("posts").document(postInfo.getId());
+            final Date date = postInfo == null ? new Date() : postInfo.getCreatedAt();
 
             for (int i = 0; i < parent.getChildCount(); i++) {
                 View view = parent.getChildAt(i);
@@ -174,7 +175,6 @@ public class WritePostActivity extends BasicAcitivity {
                         uploadTask.addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-
                             }
                         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
@@ -187,7 +187,7 @@ public class WritePostActivity extends BasicAcitivity {
                                         successCount++;
                                         if(pathList.size() == successCount){
                                             // 완료
-                                            PostInfo writeInfo = new PostInfo(title, contentsList, user.getUid(), new Date());
+                                            PostInfo writeInfo = new PostInfo(title, contentsList, user.getUid(), date);
                                             storeUpload(documentReference, writeInfo);
                                         }
                                     }
@@ -201,12 +201,11 @@ public class WritePostActivity extends BasicAcitivity {
                 }
             }
             if (pathList.size() == 0) {
-                PostInfo writeInfo = new PostInfo(title, contentsList, user.getUid(), new Date());
-                storeUpload(documentReference, writeInfo);
+                storeUpload(documentReference, new PostInfo(title, contentsList, user.getUid(), date));
             }
 
         } else {
-            startToast("게시글 정보를 입력해주세요.");
+            startToast("제목을 입력해주세요.");
         }
     }
 
@@ -228,6 +227,11 @@ public class WritePostActivity extends BasicAcitivity {
                 }
             });
     }
+
+    /*private void postInit() {
+        if(postInfo != null) {
+        }
+    }*/
 
     private void startToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
