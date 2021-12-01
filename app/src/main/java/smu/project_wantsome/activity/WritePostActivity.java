@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -46,6 +47,8 @@ public class WritePostActivity extends BasicAcitivity {
     private RelativeLayout buttonsBackgroundLayout;
     private RelativeLayout loaderLayout;
     private ImageView selectedImageView;
+    private EditText titleEditText;
+    private EditText contentEditText;
     private PostInfo postInfo;
     private int pathCount, successCount = 0;
 
@@ -58,6 +61,8 @@ public class WritePostActivity extends BasicAcitivity {
         parent = findViewById(R.id.contentsLayout);
         buttonsBackgroundLayout = findViewById(R.id.buttonsBackgroundLayout);
         loaderLayout = findViewById(R.id.loaderLayout);
+        titleEditText = findViewById(R.id.titleEditText);
+        contentEditText = findViewById(R.id.contentEditText);
 
         buttonsBackgroundLayout.setOnClickListener(onClickListener);
         findViewById(R.id.check).setOnClickListener(onClickListener);
@@ -66,7 +71,7 @@ public class WritePostActivity extends BasicAcitivity {
         findViewById(R.id.delete).setOnClickListener(onClickListener);
 
         postInfo = (PostInfo) getIntent().getSerializableExtra("postInfo");
-        //postInit();
+        postInit();
     }
 
     @Override
@@ -164,28 +169,41 @@ public class WritePostActivity extends BasicAcitivity {
                         contentsList.add(text);
                     }
                 } else {
-                    contentsList.add(pathList.get(pathCount));
-                    String[] pathArray = pathList.get(pathCount).split("\\.");
+                    String path = pathList.get(pathCount);
+                    successCount++;
+                    contentsList.add(path);
+                    Log.e("path", " : " + path);
+                    String[] pathArray = path.split("\\.");
+
+                    for(int j=0; j<pathArray.length; j++)
+                        Log.e("pathArray", " : " + pathArray[j]);
 
                     final StorageReference mountainImagesRef = storageRef.child("posts/" + documentReference.getId() + "/" + pathCount + "."+ pathArray[pathArray.length - 1]);
+
+                    Log.e("mountainImagesRef", " : " + mountainImagesRef);
                     try {
-                        InputStream stream = new FileInputStream(new File(pathList.get(pathCount)));
+                        InputStream stream = new FileInputStream(new File(path));
                         StorageMetadata metadata = new StorageMetadata.Builder().setCustomMetadata("index", "" + (contentsList.size()-1)).build();
                         UploadTask uploadTask = mountainImagesRef.putStream(stream, metadata);
+                        Log.e("로그", "성공1: ");
                         uploadTask.addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
+                                Log.e("로그", "성공2: " + e.toString());
                             }
                         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                Log.e("로그", "성공3: ");
                                 final int index = Integer.parseInt(taskSnapshot.getMetadata().getCustomMetadata("index"));
                                 mountainImagesRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
                                     public void onSuccess(Uri uri) {
+                                        Log.e("로그", "성공4: ");
                                         contentsList.set(index, uri.toString());
-                                        successCount++;
-                                        if(pathList.size() == successCount){
+                                        successCount--;
+                                        if(successCount == 0){
+                                            Log.e("로그", "성공5: ");
                                             // 완료
                                             PostInfo writeInfo = new PostInfo(title, contentsList, user.getUid(), date);
                                             storeUpload(documentReference, writeInfo);
@@ -203,7 +221,6 @@ public class WritePostActivity extends BasicAcitivity {
             if (pathList.size() == 0) {
                 storeUpload(documentReference, new PostInfo(title, contentsList, user.getUid(), date));
             }
-
         } else {
             startToast("제목을 입력해주세요.");
         }
@@ -228,10 +245,42 @@ public class WritePostActivity extends BasicAcitivity {
             });
     }
 
-    /*private void postInit() {
+    private void postInit() {
         if(postInfo != null) {
+            titleEditText.setText(postInfo.getTitle());
+            ArrayList<String> contentsList = postInfo.getContents();
+            contentEditText.setText(contentsList.get(0));
+            //pathList.add(contentsList.get(0));
+
+            for (int i=1; i<contentsList.size(); i++) {
+                String contents = contentsList.get(i);
+                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                pathList.add(contents);
+                LinearLayout linearLayout = new LinearLayout(WritePostActivity.this);
+                linearLayout.setLayoutParams(layoutParams);
+                linearLayout.setOrientation(LinearLayout.VERTICAL);
+                parent.addView(linearLayout);
+
+                ImageView imageView = new ImageView(WritePostActivity.this);
+                imageView.setLayoutParams(layoutParams);
+                imageView.setAdjustViewBounds(true);
+                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        buttonsBackgroundLayout.setVisibility(View.VISIBLE);
+                        selectedImageView = (ImageView) view;
+                    }
+                });
+                Glide.with(this).load(contents).override(1000).into(imageView);
+                linearLayout.addView(imageView);
+            }
+
+            for (int i=0; i<pathList.size(); i++) {
+                Log.e("출력", "pathList : "+pathList.get(i));
+            }
         }
-    }*/
+    }
 
     private void startToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
