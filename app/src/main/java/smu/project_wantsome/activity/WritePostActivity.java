@@ -193,13 +193,13 @@ public class WritePostActivity extends BasicActivity {
 
             for (int i = 0; i < parent.getChildCount(); i++) {
                 View view = parent.getChildAt(i);
-                String path = pathList.get(pathCount);
                 if (view instanceof EditText) {
                     String text = ((EditText) view).getText().toString();
                     if (text.length() > 0) {
                         contentsList.add(text);
                     }
-                } else if(!Patterns.WEB_URL.matcher(path).matches()){
+                } else if(!Patterns.WEB_URL.matcher(pathList.get(pathCount)).matches()){
+                    String path = pathList.get(pathCount);
                     successCount++;
                     contentsList.add(path);
                     String[] pathArray = path.split("\\.");
@@ -236,6 +236,10 @@ public class WritePostActivity extends BasicActivity {
                         Log.e("로그", "에러: " + e.toString());
                     }
                     pathCount++;
+                }else if (Patterns.WEB_URL.matcher(pathList.get(pathCount)).matches()) {
+                    String path = pathList.get(pathCount);
+                    contentsList.add(path);
+                    pathCount++;
                 }
             }
             if (successCount == 0) {
@@ -270,12 +274,11 @@ public class WritePostActivity extends BasicActivity {
             titleEditText.setText(postInfo.getTitle());
             ArrayList<String> contentsList = postInfo.getContents();
             contentEditText.setText(contentsList.get(0));
-            //pathList.add(contentsList.get(0));
 
             for (int i=1; i<contentsList.size(); i++) {
                 String contents = contentsList.get(i);
-                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 pathList.add(contents);
+                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 LinearLayout linearLayout = new LinearLayout(WritePostActivity.this);
                 linearLayout.setLayoutParams(layoutParams);
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
