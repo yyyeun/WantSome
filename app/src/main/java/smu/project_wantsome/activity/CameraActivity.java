@@ -16,6 +16,8 @@
 
 package smu.project_wantsome.activity;
 
+import static smu.project_wantsome.Util.INTENT_PATH;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.media.Image;
@@ -45,9 +47,6 @@ public class CameraActivity extends BasicAcitivity {
 
         @Override
         public void onImageAvailable(ImageReader reader) {
-            //mBackgroundHandler.post(new Camera2BasicFragment.ImageUpLoader(reader.acquireNextImage()));
-            Log.e("로그: ", "캡쳐");
-
             Image mImage= reader.acquireNextImage();
             File mFile = new File(getExternalFilesDir(null), "profileImage.jpg");
 
@@ -71,9 +70,9 @@ public class CameraActivity extends BasicAcitivity {
                 }
             }
 
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("profilePath", mFile.toString());
-            setResult(Activity.RESULT_OK, resultIntent);
+            Intent intent = new Intent();
+            intent.putExtra(INTENT_PATH, mFile.toString());
+            setResult(Activity.RESULT_OK, intent);
 
             camera2BasicFragment.closeCamera();
             finish();

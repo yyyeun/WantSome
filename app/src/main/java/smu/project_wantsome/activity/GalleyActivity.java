@@ -1,23 +1,18 @@
 package smu.project_wantsome.activity;
 
+import static smu.project_wantsome.Util.showToast;
+
 import android.Manifest;
 import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.View;
-import android.widget.AbsListView;
-import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -39,7 +34,7 @@ public class GalleyActivity extends BasicAcitivity {
             if (ActivityCompat.shouldShowRequestPermissionRationale(GalleyActivity.this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)) {
             } else {
-                startToast("권한을 허용해 주세요");
+                showToast(GalleyActivity.this, "권한을 허용해 주세요.");
             }
         }else{
             recyclerInit();
@@ -55,7 +50,7 @@ public class GalleyActivity extends BasicAcitivity {
                     recyclerInit();
                 } else {
                     finish();
-                    startToast("권한을 허용해 주세요");
+                    showToast(GalleyActivity.this, "권한을 허용해 주세요.");
                 }
             }
         }
@@ -93,10 +88,4 @@ public class GalleyActivity extends BasicAcitivity {
         }
         return listOfAllImages;
     }
-
-
-    private void startToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
-
 }

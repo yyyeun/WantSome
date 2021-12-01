@@ -1,5 +1,9 @@
 package smu.project_wantsome.activity;
 
+import static smu.project_wantsome.Util.INTENT_PATH;
+import static smu.project_wantsome.Util.showToast;
+import static smu.project_wantsome.Util.storageUriToName;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -27,6 +31,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.firestore.v1.Write;
 
 
 import java.io.File;
@@ -38,10 +43,12 @@ import java.util.Date;
 
 import smu.project_wantsome.R;
 import smu.project_wantsome.PostInfo;
+import smu.project_wantsome.Util;
 
 public class WritePostActivity extends BasicAcitivity {
     private static final String TAG = "WritePostActivity";
     private FirebaseUser user;
+    private StorageReference storageRef;
     private ArrayList<String> pathList = new ArrayList<>();
     private LinearLayout parent;
     private RelativeLayout buttonsBackgroundLayout;
@@ -50,10 +57,10 @@ public class WritePostActivity extends BasicAcitivity {
     private EditText titleEditText;
     private EditText contentEditText;
     private PostInfo postInfo;
+    private Util util;
     private int pathCount, successCount = 0;
 
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_post);
@@ -70,6 +77,9 @@ public class WritePostActivity extends BasicAcitivity {
         findViewById(R.id.imageModify).setOnClickListener(onClickListener);
         findViewById(R.id.delete).setOnClickListener(onClickListener);
 
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
+
         postInfo = (PostInfo) getIntent().getSerializableExtra("postInfo");
         postInit();
     }
@@ -80,7 +90,7 @@ public class WritePostActivity extends BasicAcitivity {
         switch (requestCode) {
             case 0:
                 if (resultCode == Activity.RESULT_OK) {
-                    String path = data.getStringExtra("profilePath");
+                    String path = data.getStringExtra(INTENT_PATH);
                     pathList.add(path);
 
                     ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -113,8 +123,9 @@ public class WritePostActivity extends BasicAcitivity {
                 break;
             case 1:
                 if(resultCode == Activity.RESULT_OK){
-                    String path = data.getStringExtra("profilePath");
-                    Glide.with(this).load(path).override(1000).into(selectedImageView);
+                    String profilePath = data.getStringExtra(INTENT_PATH);
+                    pathList.set(parent.indexOfChild((View)selectedImageView.getParent()) - 1, profilePath);
+                    Glide.with(this).load(profilePath).override(1000).into(selectedImageView);
                 }
                 break;
         }
@@ -140,8 +151,25 @@ public class WritePostActivity extends BasicAcitivity {
                     buttonsBackgroundLayout.setVisibility(View.GONE);
                     break;
                 case R.id.delete:
-                    parent.removeView((View) selectedImageView.getParent());
+                    final View selectedView = (View) selectedImageView.getParent();
+
+                    StorageReference desertRef = storageRef.child("posts/"+postInfo.getId()+"/"+storageUriToName(pathList.get(parent.indexOfChild(selectedView) - 1)));
+                    desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            showToast(WritePostActivity.this, "파일을 삭제하였습니다.");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            showToast(WritePostActivity.this, "파일을 삭제하는데 실패하였습니다.");
+                        }
+                    });
+
+                    pathList.remove(parent.indexOfChild(selectedView) - 1);
+                    parent.removeView(selectedView);
                     buttonsBackgroundLayout.setVisibility(View.GONE);
+
                     break;
             }
         }
@@ -163,20 +191,16 @@ public class WritePostActivity extends BasicAcitivity {
 
             for (int i = 0; i < parent.getChildCount(); i++) {
                 View view = parent.getChildAt(i);
+                String path = pathList.get(pathCount);
                 if (view instanceof EditText) {
                     String text = ((EditText) view).getText().toString();
                     if (text.length() > 0) {
                         contentsList.add(text);
                     }
-                } else {
-                    String path = pathList.get(pathCount);
+                } else if(!Patterns.WEB_URL.matcher(path).matches()){
                     successCount++;
                     contentsList.add(path);
-                    Log.e("path", " : " + path);
                     String[] pathArray = path.split("\\.");
-
-                    for(int j=0; j<pathArray.length; j++)
-                        Log.e("pathArray", " : " + pathArray[j]);
 
                     final StorageReference mountainImagesRef = storageRef.child("posts/" + documentReference.getId() + "/" + pathCount + "."+ pathArray[pathArray.length - 1]);
 
@@ -185,26 +209,20 @@ public class WritePostActivity extends BasicAcitivity {
                         InputStream stream = new FileInputStream(new File(path));
                         StorageMetadata metadata = new StorageMetadata.Builder().setCustomMetadata("index", "" + (contentsList.size()-1)).build();
                         UploadTask uploadTask = mountainImagesRef.putStream(stream, metadata);
-                        Log.e("로그", "성공1: ");
                         uploadTask.addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Log.e("로그", "성공2: " + e.toString());
                             }
                         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Log.e("로그", "성공3: ");
                                 final int index = Integer.parseInt(taskSnapshot.getMetadata().getCustomMetadata("index"));
                                 mountainImagesRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
                                     public void onSuccess(Uri uri) {
-                                        Log.e("로그", "성공4: ");
                                         contentsList.set(index, uri.toString());
                                         successCount--;
                                         if(successCount == 0){
-                                            Log.e("로그", "성공5: ");
-                                            // 완료
                                             PostInfo writeInfo = new PostInfo(title, contentsList, user.getUid(), date);
                                             storeUpload(documentReference, writeInfo);
                                         }
@@ -218,7 +236,7 @@ public class WritePostActivity extends BasicAcitivity {
                     pathCount++;
                 }
             }
-            if (pathList.size() == 0) {
+            if (successCount == 0) {
                 storeUpload(documentReference, new PostInfo(title, contentsList, user.getUid(), date));
             }
         } else {

@@ -1,9 +1,7 @@
 package smu.project_wantsome.adapter;
 
 import android.app.Activity;
-import android.media.Image;
-import android.util.Log;
-import android.util.Patterns;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,16 +11,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,6 +24,7 @@ import java.util.Locale;
 
 import smu.project_wantsome.PostInfo;
 import smu.project_wantsome.R;
+import smu.project_wantsome.activity.PostActivity;
 import smu.project_wantsome.listener.OnPostListener;
 
 
@@ -72,7 +67,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(activity, PostActivity.class);
+                intent.putExtra("postInfo", mDataSet.get(mainViewHolder.getAdapterPosition()));
+                activity.startActivity(intent);
             }
         });
 

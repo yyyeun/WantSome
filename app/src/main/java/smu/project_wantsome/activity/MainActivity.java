@@ -1,22 +1,18 @@
 package smu.project_wantsome.activity;
 
+import static smu.project_wantsome.Util.showToast;
+import static smu.project_wantsome.Util.storageUriToName;
+
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,8 +34,6 @@ import java.util.Date;
 
 import smu.project_wantsome.PostInfo;
 import smu.project_wantsome.R;
-import smu.project_wantsome.Util;
-import smu.project_wantsome.adapter.GalleryAdapter;
 import smu.project_wantsome.adapter.MainAdapter;
 import smu.project_wantsome.listener.OnPostListener;
 
@@ -50,7 +44,6 @@ public class MainActivity extends BasicAcitivity {
     private StorageReference storageRef;
     private MainAdapter mainAdapter;
     private ArrayList<PostInfo> postList;
-    private Util util;
     private int successCount;
 
     @Override
@@ -89,8 +82,6 @@ public class MainActivity extends BasicAcitivity {
             });
         }
 
-        util = new Util(this);
-
         postList = new ArrayList<>();
 
         mainAdapter = new MainAdapter(MainActivity.this, postList);
@@ -120,10 +111,7 @@ public class MainActivity extends BasicAcitivity {
                 String contents = contentsList.get(i);
                 if(Patterns.WEB_URL.matcher(contents).matches() && contents.contains("https://firebasestorage.googleapis.com/v0/b/project--wantsome.appspot.com/o/posts")) {
                     successCount++;
-                    String[] list1 = contents.split("\\?");
-                    String[] list2 = list1[0].split("%2F");
-                    String name = list2[list2.length - 1];
-                    StorageReference desertRef = storageRef.child("posts/"+id+"/"+name);
+                    StorageReference desertRef = storageRef.child("posts/"+id+"/"+storageUriToName(contents));
                     desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -133,7 +121,7 @@ public class MainActivity extends BasicAcitivity {
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception exception) {
-                            util.showToast("ERROR");
+                            showToast(MainActivity.this, "ERROR");
                         }
                     });
                 }
@@ -195,14 +183,14 @@ public class MainActivity extends BasicAcitivity {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            util.showToast("게시글을 삭제하였습니다.");
+                            showToast(MainActivity.this, "게시글을 삭제하였습니다.");
                             postsUpdate();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            util.showToast("게시글을 삭제하지 못하였습니다.");
+                            showToast(MainActivity.this, "게시글을 삭제하지 못하였습니다.");
                         }
                     });
         }

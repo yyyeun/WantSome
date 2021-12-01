@@ -30,6 +30,7 @@
         <activity android:name=".activity.GalleyActivity"></activity>
         <activity android:name=".activity.BasicAcitivity"></activity>
         <activity android:name=".activity.WritePostActivity"></activity>
+        <activity android:name=".activity.PostActivity"></activity>
 
 
     </application>
