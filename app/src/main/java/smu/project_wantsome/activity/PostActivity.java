@@ -1,6 +1,9 @@
 package smu.project_wantsome.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,12 +19,14 @@ import smu.project_wantsome.PostInfo;
 import smu.project_wantsome.R;
 
 public class PostActivity extends BasicActivity {
+    private PostInfo postInfo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
 
-        PostInfo postInfo = (PostInfo) getIntent().getSerializableExtra("postInfo");
+        postInfo = (PostInfo) getIntent().getSerializableExtra("postInfo");
         TextView titleTextView = findViewById(R.id.titleTextView);
         titleTextView.setText(postInfo.getTitle());
 
@@ -53,5 +58,36 @@ public class PostActivity extends BasicActivity {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.post, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete:
+                //firebaseHelper.storageDelete(postInfo);
+                finish();
+                return true;
+
+            case R.id.modify:
+                myStartActivity(WritePostActivity.class, postInfo);
+                finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+    private void myStartActivity(Class c, PostInfo postInfo) {
+        Intent intent = new Intent(this, c);
+        intent.putExtra("postInfo", postInfo);
+        startActivity(intent);
     }
 }
