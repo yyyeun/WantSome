@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import smu.project_wantsome.R;
 import smu.project_wantsome.adapter.GalleryAdapter;
 
-public class GalleyActivity extends BasicAcitivity {
+public class GalleyActivity extends BasicActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

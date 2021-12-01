@@ -31,7 +31,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.google.firestore.v1.Write;
 
 
 import java.io.File;
@@ -45,7 +44,7 @@ import smu.project_wantsome.R;
 import smu.project_wantsome.PostInfo;
 import smu.project_wantsome.Util;
 
-public class WritePostActivity extends BasicAcitivity {
+public class WritePostActivity extends BasicActivity {
     private static final String TAG = "WritePostActivity";
     private FirebaseUser user;
     private StorageReference storageRef;
@@ -64,6 +63,8 @@ public class WritePostActivity extends BasicAcitivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_post);
+
+        setToolbarTitle("글쓰기");
 
         parent = findViewById(R.id.contentsLayout);
         buttonsBackgroundLayout = findViewById(R.id.buttonsBackgroundLayout);
@@ -111,6 +112,7 @@ public class WritePostActivity extends BasicAcitivity {
                             selectedImageView = (ImageView) view;
                         }
                     });
+
                     Glide.with(this).load(path).override(1000).into(imageView);
                     linearLayout.addView(imageView);
 

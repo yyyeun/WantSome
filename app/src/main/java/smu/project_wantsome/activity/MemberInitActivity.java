@@ -39,7 +39,7 @@ import java.io.InputStream;
 import smu.project_wantsome.MemberInfo;
 import smu.project_wantsome.R;
 
-public class MemberInitActivity extends BasicAcitivity {
+public class MemberInitActivity extends BasicActivity {
     private static final String TAG = "MemberInitActivity";
     private ImageView profileImageView;
     private RelativeLayout loaderLayout;

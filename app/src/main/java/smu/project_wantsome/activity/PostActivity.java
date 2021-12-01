@@ -15,7 +15,7 @@ import java.util.Locale;
 import smu.project_wantsome.PostInfo;
 import smu.project_wantsome.R;
 
-public class PostActivity extends BasicAcitivity {
+public class PostActivity extends BasicActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

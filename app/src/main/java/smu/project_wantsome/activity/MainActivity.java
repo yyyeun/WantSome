@@ -37,7 +37,7 @@ import smu.project_wantsome.R;
 import smu.project_wantsome.adapter.MainAdapter;
 import smu.project_wantsome.listener.OnPostListener;
 
-public class MainActivity extends BasicAcitivity {
+public class MainActivity extends BasicActivity {
     private static final String TAG = "MainActivity";
     private FirebaseUser firebaseUser;
     private FirebaseFirestore firebaseFirestore;
@@ -51,10 +51,11 @@ public class MainActivity extends BasicAcitivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setToolbarTitle(getResources().getString(R.string.app_name));
+
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseStorage storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
-
 
         if (firebaseUser == null) {
             myStartActivity(SignUpActivity.class);

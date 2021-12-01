@@ -23,9 +23,7 @@ import android.content.Intent;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Bundle;
-import android.util.Log;
 //import android.support.v7.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,7 +33,7 @@ import java.nio.ByteBuffer;
 import smu.project_wantsome.R;
 import smu.project_wantsome.fragment.Camera2BasicFragment;
 
-public class CameraActivity extends BasicAcitivity {
+public class CameraActivity extends BasicActivity {
     private Camera2BasicFragment camera2BasicFragment;
 
     /**

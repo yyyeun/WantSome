@@ -1,5 +1,7 @@
 package smu.project_wantsome.adapter;
 
+import static smu.project_wantsome.Util.INTENT_PATH;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -53,7 +55,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
             @Override
             public void onClick(View view) {
                 Intent resultIntent = new Intent();
-                resultIntent.putExtra("profilePath", mDataSet.get(galleryViewHolder.getAdapterPosition()));
+                resultIntent.putExtra(INTENT_PATH, mDataSet.get(galleryViewHolder.getAdapterPosition()));
                 activity.setResult(Activity.RESULT_OK, resultIntent);
                 activity.finish();
             }
