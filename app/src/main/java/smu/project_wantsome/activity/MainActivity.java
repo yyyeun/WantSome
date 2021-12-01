@@ -150,7 +150,7 @@ public class MainActivity extends BasicActivity {
         }
     };
 
-    private void postsUpdate(){
+    public void postsUpdate(){
         if (firebaseUser != null) {
             CollectionReference collectionReference = firebaseFirestore.collection("posts");
             collectionReference.orderBy("createdAt", Query.Direction.DESCENDING).get()
