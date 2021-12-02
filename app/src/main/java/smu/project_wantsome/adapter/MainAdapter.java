@@ -103,17 +103,22 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
             contentsLayout.setTag(contentsList);
             contentsLayout.removeAllViews();
 
-            for (int i=1; i<contentsList.size(); i++) {
-                String contents = contentsList.get(i);
-                if(Patterns.WEB_URL.matcher(contents).matches() && contents.contains("https://firebasestorage.googleapis.com/v0/b/project--wantsome.appspot.com/o/posts"))
-                {
-                    ImageView imageView = new ImageView(activity);
-                    imageView.setLayoutParams(layoutParams);
-                    imageView.setAdjustViewBounds(true);
-                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                    contentsLayout.addView(imageView);
-                    Glide.with(activity).load(contents).override(1000).thumbnail(0.1f).into(imageView);
-                }
+            //for (int i=1; i<contentsList.size(); i++) {
+            if(contentsList.size() > 1) {
+                contentsLayout.setVisibility(View.VISIBLE);
+                String contents = contentsList.get(1);
+                //if(Patterns.WEB_URL.matcher(contents).matches() && contents.contains("https://firebasestorage.googleapis.com/v0/b/project--wantsome.appspot.com/o/posts"))
+                //{
+                ImageView imageView = new ImageView(activity);
+                imageView.setAdjustViewBounds(true);
+                imageView.setLayoutParams(layoutParams);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                contentsLayout.addView(imageView);
+                Glide.with(activity).load(contents).override(1000).thumbnail(0.1f).into(imageView);
+            } else {
+                contentsLayout.setVisibility(View.GONE);
+            }
+            //}
 
             /*String contents = contentsList.get(0);
             ImageView imageView = cardView.findViewById(R.id.productImageView);
@@ -127,7 +132,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
                     textView.setText(contents);
                     contentsLayout.addView(textView);
                 }*/
-            }
+            //}
         }
     }
 
