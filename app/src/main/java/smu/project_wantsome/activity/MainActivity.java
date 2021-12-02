@@ -163,6 +163,8 @@ public class MainActivity extends BasicActivity {
             FirebaseAuth.getInstance().signOut();
             myStartActivity(SignUpActivity.class);
             return true;
+        } else if(id == R.id.action_user) {
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

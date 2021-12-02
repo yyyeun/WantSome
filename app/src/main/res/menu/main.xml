@@ -6,4 +6,9 @@
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_baseline_clear_24"
         android:title="Logout"/>
+    <item
+        android:id="@+id/action_user"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_baseline_person_24"
+        android:title="UserInfo"/>
 </menu>
