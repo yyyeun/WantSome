@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -147,6 +149,24 @@ public class MainActivity extends BasicActivity {
             myStartActivity(WritePostActivity.class, postList.get(position));
         }
     };
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_logout) {
+            FirebaseAuth.getInstance().signOut();
+            myStartActivity(SignUpActivity.class);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
