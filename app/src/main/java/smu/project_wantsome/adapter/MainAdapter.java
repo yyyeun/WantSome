@@ -2,6 +2,8 @@ package smu.project_wantsome.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.Image;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -94,6 +96,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
 
         LinearLayout contentsLayout = cardView.findViewById(R.id.contentsLayout);
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
         ArrayList<String> contentsList = mDataSet.get(position).getContents();
 
         if(contentsLayout.getTag() == null || !contentsLayout.getTag().equals(contentsList)) {
@@ -102,20 +105,28 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
 
             for (int i=1; i<contentsList.size(); i++) {
                 String contents = contentsList.get(i);
-                //if(Patterns.WEB_URL.matcher(contents).matches() && contents.contains("https://firebasestorage.googleapis.com/v0/b/project--wantsome.appspot.com/o/posts"){
-                ImageView imageView = new ImageView(activity);
-                imageView.setLayoutParams(layoutParams);
-                imageView.setAdjustViewBounds(true);
-                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                contentsLayout.addView(imageView);
-                Glide.with(activity).load(contents).override(1000).thumbnail(0.1f).into(imageView);
+                if(Patterns.WEB_URL.matcher(contents).matches() && contents.contains("https://firebasestorage.googleapis.com/v0/b/project--wantsome.appspot.com/o/posts"))
+                {
+                    ImageView imageView = new ImageView(activity);
+                    imageView.setLayoutParams(layoutParams);
+                    imageView.setAdjustViewBounds(true);
+                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                    contentsLayout.addView(imageView);
+                    Glide.with(activity).load(contents).override(1000).thumbnail(0.1f).into(imageView);
+                }
+
+            /*String contents = contentsList.get(0);
+            ImageView imageView = cardView.findViewById(R.id.productImageView);
+            imageView.setLayoutParams(layoutParams);
+            imageView.setAdjustViewBounds(true);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);*/
                 /*} else {
                     // 제목만 출력될 수 있도록 변경
                     TextView textView = new TextView(activity);
                     textView.setLayoutParams(layoutParams);
                     textView.setText(contents);
-                    contentsLayout.addView(textView);*/
-                //}
+                    contentsLayout.addView(textView);
+                }*/
             }
         }
     }

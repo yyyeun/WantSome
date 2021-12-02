@@ -6,6 +6,7 @@ import static smu.project_wantsome.Util.storageUriToName;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -94,6 +95,18 @@ public class MainActivity extends BasicActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         recyclerView.setAdapter(mainAdapter);
+
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipe_layout);
+
+        swipeRefreshLayout.setOnRefreshListener(
+            new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    postsUpdate();
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        );
     }
 
     @Override
