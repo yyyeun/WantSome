@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,6 +32,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -164,7 +167,17 @@ public class MainActivity extends BasicActivity {
             myStartActivity(SignUpActivity.class);
             return true;
         } else if(id == R.id.action_user) {
-            return true;
+            if (firebaseUser != null) {
+                DocumentReference documentReference = firebaseFirestore.collection("users").document(firebaseUser.getUid());
+                documentReference.get().addOnCompleteListener(task -> {
+                    DocumentSnapshot document = task.getResult();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle(document.getData().get("name").toString()).setMessage("지역 | " + document.getData().get("address").toString() + "\n채팅 | " + document.getData().get("chat").toString());
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                });
+                return true;
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -174,10 +187,6 @@ public class MainActivity extends BasicActivity {
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
-//                case R.id.logoutButton:
-//                    FirebaseAuth.getInstance().signOut();
-//                    myStartActivity(SignUpActivity.class);
-//                    break;
                 case R.id.floatingActionButton:
                     myStartActivity(WritePostActivity.class);
                     break;
