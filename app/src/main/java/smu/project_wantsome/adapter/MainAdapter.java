@@ -104,9 +104,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
             contentsLayout.removeAllViews();
 
             //for (int i=1; i<contentsList.size(); i++) {
-            if(contentsList.size() > 1) {
+            if(contentsList.size() > 2) {
                 contentsLayout.setVisibility(View.VISIBLE);
-                String contents = contentsList.get(1);
+                String contents = contentsList.get(2);
                 //if(Patterns.WEB_URL.matcher(contents).matches() && contents.contains("https://firebasestorage.googleapis.com/v0/b/project--wantsome.appspot.com/o/posts"))
                 //{
                 ImageView imageView = new ImageView(activity);

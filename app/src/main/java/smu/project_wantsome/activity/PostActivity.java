@@ -31,6 +31,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import org.w3c.dom.Text;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,6 +49,8 @@ public class PostActivity extends BasicActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
+
+        TextView wantProductTextView = (TextView) findViewById(R.id.wantProductTextView);
 
         postInfo = (PostInfo) getIntent().getSerializableExtra("postInfo");
         TextView titleTextView = findViewById(R.id.titleTextView);
@@ -70,6 +74,12 @@ public class PostActivity extends BasicActivity {
                     textView.setLayoutParams(layoutParams);
                     textView.setText(contents);
                     contentsLayout.addView(textView);
+                } else if(i == 1) {
+                    TextView textView = new TextView(this);
+                    textView.setLayoutParams(layoutParams);
+                    textView.setText(contents);
+                    wantProductTextView.setText(contents);
+                    contentsLayout.addView(textView);
                 } else {
                     ImageView imageView = new ImageView(this);
                     imageView.setLayoutParams(layoutParams);
@@ -85,12 +95,17 @@ public class PostActivity extends BasicActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.post, menu);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+
             case R.id.delete:
                 storageDelete(postInfo);
                 //firebaseHelper.storageDelete(postInfo);
