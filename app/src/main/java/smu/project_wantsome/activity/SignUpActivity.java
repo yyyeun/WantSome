@@ -8,7 +8,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -18,7 +17,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import smu.project_wantsome.R;
 
-public class SignUpActivity extends BasicAcitivity {
+public class SignUpActivity extends BasicActivity {
 
     private FirebaseAuth mAuth;
 

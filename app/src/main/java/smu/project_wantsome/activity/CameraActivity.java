@@ -16,14 +16,14 @@
 
 package smu.project_wantsome.activity;
 
+import static smu.project_wantsome.Util.INTENT_PATH;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Bundle;
-import android.util.Log;
 //import android.support.v7.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,7 +33,7 @@ import java.nio.ByteBuffer;
 import smu.project_wantsome.R;
 import smu.project_wantsome.fragment.Camera2BasicFragment;
 
-public class CameraActivity extends BasicAcitivity {
+public class CameraActivity extends BasicActivity {
     private Camera2BasicFragment camera2BasicFragment;
 
     /**
@@ -45,9 +45,6 @@ public class CameraActivity extends BasicAcitivity {
 
         @Override
         public void onImageAvailable(ImageReader reader) {
-            //mBackgroundHandler.post(new Camera2BasicFragment.ImageUpLoader(reader.acquireNextImage()));
-            Log.e("로그: ", "캡쳐");
-
             Image mImage= reader.acquireNextImage();
             File mFile = new File(getExternalFilesDir(null), "profileImage.jpg");
 
@@ -71,9 +68,9 @@ public class CameraActivity extends BasicAcitivity {
                 }
             }
 
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("profilePath", mFile.toString());
-            setResult(Activity.RESULT_OK, resultIntent);
+            Intent intent = new Intent();
+            intent.putExtra(INTENT_PATH, mFile.toString());
+            setResult(Activity.RESULT_OK, intent);
 
             camera2BasicFragment.closeCamera();
             finish();

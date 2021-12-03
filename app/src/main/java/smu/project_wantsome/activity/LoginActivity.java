@@ -1,5 +1,7 @@
 package smu.project_wantsome.activity;
 
+import static smu.project_wantsome.Util.showToast;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,7 +10,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -18,7 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import smu.project_wantsome.R;
 
-public class LoginActivity extends BasicAcitivity {
+public class LoginActivity extends BasicActivity {
 
     private FirebaseAuth mAuth;
 
@@ -59,18 +60,18 @@ public class LoginActivity extends BasicAcitivity {
 
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                startToast("로그인에 성공하였습니다.");
+                                showToast(LoginActivity.this, "로그인에 성공하였습니다.");
                                 myStartActivity(MainActivity.class);
                             } else {
                                 if(task.getException() != null) {
-                                    startToast(task.getException().toString());
+                                    showToast(LoginActivity.this, task.getException().toString());
                                 }
                             }
                         }
                     });
         }
         else {
-            startToast("이메일 또는 비밀번호를 입력해주세요.");
+            showToast(LoginActivity.this, "이메일 또는 비밀번호를 입력해주세요.");
         }
     }
 
