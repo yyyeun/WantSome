@@ -1,6 +1,7 @@
 package smu.project_wantsome.adapter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.media.Image;
 import android.util.Patterns;
@@ -19,6 +20,10 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -94,10 +99,23 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         TextView createdAtTextView = cardView.findViewById(R.id.createdAtTextView);
         createdAtTextView.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(mDataSet.get(position).getCreatedAt()));
 
+        TextView addressTextView = cardView.findViewById(R.id.addressTextView);
+        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(mDataSet.get(position).getPublisher());
+        documentReference.get().addOnCompleteListener(task -> {
+            DocumentSnapshot document = task.getResult();
+            addressTextView.setText(document.getData().get("address").toString());
+        });
+
         LinearLayout contentsLayout = cardView.findViewById(R.id.contentsLayout);
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         ArrayList<String> contentsList = mDataSet.get(position).getContents();
+
+        String wpContents = contentsList.get(1);
+        if(wpContents != null) {
+            TextView wantproductMainTextView = cardView.findViewById(R.id.wantproductMainTextView);
+            wantproductMainTextView.setText(wpContents);
+        }
 
         if(contentsLayout.getTag() == null || !contentsLayout.getTag().equals(contentsList)) {
             contentsLayout.setTag(contentsList);

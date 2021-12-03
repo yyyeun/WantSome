@@ -47,6 +47,18 @@
                     tools:text="타이틀" />
 
                 <TextView
+                    android:id="@+id/addressTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="지역" />
+
+                <TextView
+                    android:id="@+id/wantproductMainTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="원하는 물품" />
+
+                <TextView
                     android:id="@+id/createdAtTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

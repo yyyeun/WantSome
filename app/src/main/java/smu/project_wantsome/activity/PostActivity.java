@@ -4,12 +4,15 @@ import static smu.project_wantsome.Util.showToast;
 import static smu.project_wantsome.Util.storageUriToName;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,6 +27,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -69,18 +74,18 @@ public class PostActivity extends BasicActivity {
 
             for (int i = 0; i < contentsList.size(); i++) {
                 String contents = contentsList.get(i);
-                if (i == 0) {
+                if (i == 0) { // 내용
                     TextView textView = new TextView(this);
                     textView.setLayoutParams(layoutParams);
                     textView.setText(contents);
                     contentsLayout.addView(textView);
-                } else if(i == 1) {
+                } else if(i == 1) { // 원하는 물품
                     TextView textView = new TextView(this);
                     textView.setLayoutParams(layoutParams);
                     textView.setText(contents);
                     wantProductTextView.setText(contents);
                     contentsLayout.addView(textView);
-                } else {
+                } else { // 이미지
                     ImageView imageView = new ImageView(this);
                     imageView.setLayoutParams(layoutParams);
                     imageView.setAdjustViewBounds(true);
@@ -90,6 +95,20 @@ public class PostActivity extends BasicActivity {
                 }
             }
         }
+
+        Button buttonOpenChat = (Button) findViewById(R.id.buttonOpenChat);
+        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(postInfo.getPublisher());
+        documentReference.get().addOnCompleteListener(task -> {
+            DocumentSnapshot document = task.getResult();
+            buttonOpenChat.setText(document.getData().get("chat").toString());
+            buttonOpenChat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(document.getData().get("chat").toString()));
+                    startActivity(intent);
+                }
+            });
+        });
     }
 
     @Override
