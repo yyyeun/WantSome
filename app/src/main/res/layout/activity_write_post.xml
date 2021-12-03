@@ -44,6 +44,14 @@
                     android:gravity="start|top"
                     android:hint="내용"
                     android:inputType="textMultiLine" />
+
+                <EditText
+                    android:id="@+id/wantProductEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:text="Name" />
             </LinearLayout>
 
             <LinearLayout

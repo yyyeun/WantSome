@@ -125,9 +125,9 @@ public class WritePostActivity extends BasicActivity {
                 break;
             case 1:
                 if(resultCode == Activity.RESULT_OK){
-                    String profilePath = data.getStringExtra(INTENT_PATH);
-                    pathList.set(parent.indexOfChild((View)selectedImageView.getParent()) - 1, profilePath);
-                    Glide.with(this).load(profilePath).override(1000).into(selectedImageView);
+                    String path = data.getStringExtra(INTENT_PATH);
+                    pathList.set(parent.indexOfChild((View)selectedImageView.getParent()) - 1, path);
+                    Glide.with(this).load(path).override(1000).into(selectedImageView);
                 }
                 break;
         }
