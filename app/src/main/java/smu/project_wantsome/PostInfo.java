@@ -7,6 +7,7 @@ import java.util.Date;
 public class PostInfo implements Serializable {
     private String title;
     private ArrayList<String> contents;
+    //private String wantProduct;
     private String publisher;
     private Date createdAt;
     private String id;

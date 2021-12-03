@@ -55,6 +55,7 @@ public class WritePostActivity extends BasicActivity {
     private ImageView selectedImageView;
     private EditText titleEditText;
     private EditText contentEditText;
+    private EditText wantProductEditText;
     private PostInfo postInfo;
     private Util util;
     private int pathCount, successCount = 0;
@@ -71,6 +72,7 @@ public class WritePostActivity extends BasicActivity {
         loaderLayout = findViewById(R.id.loaderLayout);
         titleEditText = findViewById(R.id.titleEditText);
         contentEditText = findViewById(R.id.contentEditText);
+        wantProductEditText = findViewById(R.id.wantProductEditText);
 
         buttonsBackgroundLayout.setOnClickListener(onClickListener);
         findViewById(R.id.check).setOnClickListener(onClickListener);
@@ -126,7 +128,7 @@ public class WritePostActivity extends BasicActivity {
             case 1:
                 if(resultCode == Activity.RESULT_OK){
                     String path = data.getStringExtra(INTENT_PATH);
-                    pathList.set(parent.indexOfChild((View)selectedImageView.getParent()) - 1, path);
+                    pathList.set(parent.indexOfChild((View)selectedImageView.getParent()) - 2, path);
                     Glide.with(this).load(path).override(1000).into(selectedImageView);
                 }
                 break;
@@ -149,6 +151,7 @@ public class WritePostActivity extends BasicActivity {
                     }
                     break;
                 case R.id.imageModify:
+                    Log.e("이미지", "선택");
                     myStartActivity(GalleyActivity.class, 1);
                     buttonsBackgroundLayout.setVisibility(View.GONE);
                     break;
@@ -274,8 +277,9 @@ public class WritePostActivity extends BasicActivity {
             titleEditText.setText(postInfo.getTitle());
             ArrayList<String> contentsList = postInfo.getContents();
             contentEditText.setText(contentsList.get(0));
+            wantProductEditText.setText(contentsList.get(1));
 
-            for (int i=1; i<contentsList.size(); i++) {
+            for (int i=2; i<contentsList.size(); i++) {
                 String contents = contentsList.get(i);
                 pathList.add(contents);
                 ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);

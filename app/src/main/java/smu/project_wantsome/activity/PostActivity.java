@@ -74,6 +74,12 @@ public class PostActivity extends BasicActivity {
                     textView.setLayoutParams(layoutParams);
                     textView.setText(contents);
                     contentsLayout.addView(textView);
+                } else if(i == 1) {
+                    TextView textView = new TextView(this);
+                    textView.setLayoutParams(layoutParams);
+                    textView.setText(contents);
+                    wantProductTextView.setText(contents);
+                    contentsLayout.addView(textView);
                 } else {
                     ImageView imageView = new ImageView(this);
                     imageView.setLayoutParams(layoutParams);
