@@ -73,7 +73,6 @@ public class GalleyActivity extends BasicActivity {
         int column_index_data;
         String PathOfImage = null;
 
-        // 비디오 추가 -> 11번 강의 6분 ~
         uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         String[] projection = { MediaStore.MediaColumns.DATA, MediaStore.Images.Media.BUCKET_DISPLAY_NAME };
 

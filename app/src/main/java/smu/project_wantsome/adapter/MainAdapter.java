@@ -121,7 +121,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
             contentsLayout.setTag(contentsList);
             contentsLayout.removeAllViews();
 
-            //for (int i=1; i<contentsList.size(); i++) {
             if(contentsList.size() > 2) {
                 contentsLayout.setVisibility(View.VISIBLE);
                 String contents = contentsList.get(2);
@@ -136,20 +135,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
             } else {
                 contentsLayout.setVisibility(View.GONE);
             }
-            //}
-
-            /*String contents = contentsList.get(0);
-            ImageView imageView = cardView.findViewById(R.id.productImageView);
-            imageView.setLayoutParams(layoutParams);
-            imageView.setAdjustViewBounds(true);
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);*/
-                /*} else {
-                    // 제목만 출력될 수 있도록 변경
-                    TextView textView = new TextView(activity);
-                    textView.setLayoutParams(layoutParams);
-                    textView.setText(contents);
-                    contentsLayout.addView(textView);
-                }*/
             //}
         }
     }

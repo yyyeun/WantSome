@@ -4,14 +4,10 @@ import static smu.project_wantsome.Util.INTENT_PATH;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -19,10 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-
-import javax.annotation.Nullable;
 
 import smu.project_wantsome.R;
 

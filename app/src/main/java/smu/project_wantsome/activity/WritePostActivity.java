@@ -117,12 +117,6 @@ public class WritePostActivity extends BasicActivity {
 
                     Glide.with(this).load(path).override(1000).into(imageView);
                     linearLayout.addView(imageView);
-
-                    // 이미지 설명 추가 가능
-                    /*EditText editText = new EditText(WritePostActivity.this);
-                    editText.setLayoutParams(layoutParams);
-                    editText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_CLASS_TEXT);
-                    parent.addView(editText);*/
                 }
                 break;
             case 1:

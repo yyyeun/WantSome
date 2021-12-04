@@ -33,8 +33,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import org.w3c.dom.Document;
-
 import java.util.ArrayList;
 import java.util.Date;
 
