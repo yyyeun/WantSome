@@ -36,10 +36,6 @@ import smu.project_wantsome.fragment.Camera2BasicFragment;
 public class CameraActivity extends BasicActivity {
     private Camera2BasicFragment camera2BasicFragment;
 
-    /**
-     * This a callback object for the {@link ImageReader}. "onImageAvailable" will be called when a
-     * still image is ready to be saved.
-     */
     private final ImageReader.OnImageAvailableListener mOnImageAvailableListener
             = new ImageReader.OnImageAvailableListener() {
 

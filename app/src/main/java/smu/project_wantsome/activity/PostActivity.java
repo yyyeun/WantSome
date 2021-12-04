@@ -56,13 +56,18 @@ public class PostActivity extends BasicActivity {
         setContentView(R.layout.activity_post);
 
         TextView wantProductTextView = (TextView) findViewById(R.id.wantProductTextView);
+        TextView createdAtTextView = (TextView) findViewById(R.id.createdAtTextView);
 
         postInfo = (PostInfo) getIntent().getSerializableExtra("postInfo");
         TextView titleTextView = findViewById(R.id.titleTextView);
         titleTextView.setText(postInfo.getTitle());
 
-        TextView createdAtTextView = findViewById(R.id.createdAtTextView);
-        createdAtTextView.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(postInfo.getCreatedAt()));
+        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(postInfo.getPublisher());
+        documentReference.get().addOnCompleteListener(task -> {
+            DocumentSnapshot document = task.getResult();
+            String text = (new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(postInfo.getCreatedAt())) + " | " + document.getData().get("address").toString();
+            createdAtTextView.setText(text);
+        });
 
         LinearLayout contentsLayout = findViewById(R.id.contentsLayout);
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -78,11 +83,14 @@ public class PostActivity extends BasicActivity {
                     TextView textView = new TextView(this);
                     textView.setLayoutParams(layoutParams);
                     textView.setText(contents);
+                    textView.setTextSize(18);
+                    textView.setPadding(0, 20, 0, 20);
                     contentsLayout.addView(textView);
                 } else if(i == 1) { // 원하는 물품
                     TextView textView = new TextView(this);
                     textView.setLayoutParams(layoutParams);
-                    textView.setText(contents);
+                    textView.setText("원하는 물건 : " + contents);
+                    textView.setPadding(0, 20, 0, 20);
                     wantProductTextView.setText(contents);
                     contentsLayout.addView(textView);
                 } else { // 이미지
@@ -97,10 +105,10 @@ public class PostActivity extends BasicActivity {
         }
 
         Button buttonOpenChat = (Button) findViewById(R.id.buttonOpenChat);
-        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(postInfo.getPublisher());
+
         documentReference.get().addOnCompleteListener(task -> {
             DocumentSnapshot document = task.getResult();
-            buttonOpenChat.setText(document.getData().get("chat").toString());
+            buttonOpenChat.setText("작성자 오픈채팅방으로 이동하기");
             buttonOpenChat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -148,9 +156,9 @@ public class PostActivity extends BasicActivity {
 
         final String id = postInfo.getId();
         ArrayList<String> contentsList = postInfo.getContents();
-        for (int i=1; i<contentsList.size(); i++) {
+        for (int i=2; i<contentsList.size(); i++) {
             String contents = contentsList.get(i);
-            if(Patterns.WEB_URL.matcher(contents).matches() && contents.contains("https://firebasestorage.googleapis.com/v0/b/project--wantsome.appspot.com/o/posts")) {
+            //if(Patterns.WEB_URL.matcher(contents).matches() && contents.contains("https://firebasestorage.googleapis.com/v0/b/project--wantsome.appspot.com/o/posts")) {
                 successCount++;
                 StorageReference desertRef = storageRef.child("posts/"+id+"/"+storageUriToName(contents));
                 desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -165,7 +173,7 @@ public class PostActivity extends BasicActivity {
                         showToast(PostActivity.this, "ERROR");
                     }
                 });
-            }
+            //}
         }
         storeDelete(id);
     }
