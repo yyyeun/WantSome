@@ -90,42 +90,28 @@ public class MemberInitActivity extends BasicActivity {
                 case R.id.checkButton:
                     storageUploader();
                     break;
-                case R.id.profileImageView:
-                    CardView cardView = findViewById(R.id.buttonsCardView);
-                    if(cardView.getVisibility() == View.VISIBLE){
-                        cardView.setVisibility(View.GONE);
-                    } else {
-                        cardView.setVisibility(View.VISIBLE);
-                    }
-                    break;
-                case R.id.imageModify:
-                    myStartActivity(CameraActivity.class);
-                    break;
-                case R.id.delete:
-                    myStartActivity(GalleyActivity.class);
-                    break;
             }
         }
     };
 
-    private void storageUploader() {
-        final String name = ((EditText) findViewById(R.id.nameEditText)).getText().toString();
-        final String address = ((EditText) findViewById(R.id.addressEditText)).getText().toString();
-        final String chat = ((EditText) findViewById(R.id.chatEditText)).getText().toString();
+        private void storageUploader() {
+            final String name = ((EditText) findViewById(R.id.nameEditText)).getText().toString();
+            final String address = ((EditText) findViewById(R.id.addressEditText)).getText().toString();
+            final String chat = ((EditText) findViewById(R.id.chatEditText)).getText().toString();
 
-        if (name.length() > 0 && address.length() > 0 && chat.length() > 0) {
-            loaderLayout.setVisibility(View.VISIBLE);
+            if (name.length() > 0 && address.length() > 0 && chat.length() > 0) {
+                loaderLayout.setVisibility(View.VISIBLE);
 
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageRef = storage.getReference();
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference storageRef = storage.getReference();
 
-            user = FirebaseAuth.getInstance().getCurrentUser();
-            final StorageReference mountainImagesRef = storageRef.child("users/" + user.getUid() + "/profileImage.jpg");
+                user = FirebaseAuth.getInstance().getCurrentUser();
+                final StorageReference mountainImagesRef = storageRef.child("users/" + user.getUid() + "/profileImage.jpg");
 
-            if(profilePath == null) {
-                MemberInfo memberInfo = new MemberInfo(name, address, chat);
-                storeUploader(memberInfo);
-            } else {
+                if (profilePath == null) {
+                    MemberInfo memberInfo = new MemberInfo(name, address, chat);
+                    storeUploader(memberInfo);
+                } /*else {
                 try {
                     InputStream stream = new FileInputStream(new File(profilePath));
                     UploadTask uploadTask = mountainImagesRef.putStream(stream);
@@ -153,35 +139,35 @@ public class MemberInitActivity extends BasicActivity {
                 } catch (FileNotFoundException e) {
                     Log.e("로그", "에러: " + e.toString());
                 }
+            }*/
+            } else {
+                showToast(MemberInitActivity.this, "회원정보를 보내는데 실패했습니다.");
             }
-        } else {
-            showToast(MemberInitActivity.this, "회원정보를 보내는데 실패했습니다.");
         }
-    }
 
-    private void storeUploader(MemberInfo memberInfo){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("users").document(user.getUid()).set(memberInfo)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        showToast(MemberInitActivity.this, "회원 정보 등록을 성공하였습니다.");
-                        loaderLayout.setVisibility(View.GONE);
-                        finish();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        showToast(MemberInitActivity.this, "회원 정보 등록에 실패하였습니다.");
-                        loaderLayout.setVisibility(View.GONE);
-                        Log.w(TAG, "Error writing document", e);
-                    }
-                });
-    }
+        private void storeUploader(MemberInfo memberInfo) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("users").document(user.getUid()).set(memberInfo)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            showToast(MemberInitActivity.this, "회원 정보 등록을 성공하였습니다.");
+                            loaderLayout.setVisibility(View.GONE);
+                            finish();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            showToast(MemberInitActivity.this, "회원 정보 등록에 실패하였습니다.");
+                            loaderLayout.setVisibility(View.GONE);
+                            Log.w(TAG, "Error writing document", e);
+                        }
+                    });
+        }
 
-    private void myStartActivity(Class c) {
-        Intent intent = new Intent(this, c);
-        startActivityForResult(intent, 0);
-    }
+        private void myStartActivity(Class c) {
+            Intent intent = new Intent(this, c);
+            startActivityForResult(intent, 0);
+        }
 }

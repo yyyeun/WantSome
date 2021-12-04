@@ -78,7 +78,7 @@ public class WritePostActivity extends BasicActivity {
         findViewById(R.id.check).setOnClickListener(onClickListener);
         findViewById(R.id.image).setOnClickListener(onClickListener);
         findViewById(R.id.imageModify).setOnClickListener(onClickListener);
-        findViewById(R.id.delete).setOnClickListener(onClickListener);
+        findViewById(R.id.imageDelete).setOnClickListener(onClickListener);
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
@@ -138,7 +138,7 @@ public class WritePostActivity extends BasicActivity {
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            switch (view.getId()){
+            switch (view.getId()) {
                 case R.id.check:
                     storageUpload();
                     break;
@@ -146,35 +146,39 @@ public class WritePostActivity extends BasicActivity {
                     myStartActivity(GalleyActivity.class, 0);
                     break;
                 case R.id.buttonsBackgroundLayout:
-                    if(buttonsBackgroundLayout.getVisibility() == View.VISIBLE) {
+                    if (buttonsBackgroundLayout.getVisibility() == View.VISIBLE) {
                         buttonsBackgroundLayout.setVisibility(View.GONE);
                     }
                     break;
                 case R.id.imageModify:
-                    Log.e("이미지", "선택");
                     myStartActivity(GalleyActivity.class, 1);
                     buttonsBackgroundLayout.setVisibility(View.GONE);
                     break;
-                case R.id.delete:
+                case R.id.imageDelete:
                     final View selectedView = (View) selectedImageView.getParent();
-
-                    StorageReference desertRef = storageRef.child("posts/"+postInfo.getId()+"/"+storageUriToName(pathList.get(parent.indexOfChild(selectedView) - 1)));
-                    desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            showToast(WritePostActivity.this, "파일을 삭제하였습니다.");
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            showToast(WritePostActivity.this, "파일을 삭제하는데 실패하였습니다.");
-                        }
-                    });
-
-                    pathList.remove(parent.indexOfChild(selectedView) - 1);
-                    parent.removeView(selectedView);
-                    buttonsBackgroundLayout.setVisibility(View.GONE);
-
+                    String path = pathList.get(parent.indexOfChild(selectedView) - 2);
+                    Log.e("path", ""+path);
+                    if(Patterns.WEB_URL.matcher(path).matches() && path.contains("https://firebasestorage.googleapis.com/v0/b/project--wantsome.appspot.com/o/posts")) {
+                        StorageReference desertRef = storageRef.child("posts/" + postInfo.getId() + "/" + storageUriToName(path));
+                        desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                showToast(WritePostActivity.this, "파일을 삭제하였습니다.");
+                                pathList.remove(parent.indexOfChild(selectedView) - 2);
+                                parent.removeView(selectedView);
+                                buttonsBackgroundLayout.setVisibility(View.GONE);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                showToast(WritePostActivity.this, "파일을 삭제하는데 실패하였습니다.");
+                            }
+                        });
+                    }else{
+                        pathList.remove(parent.indexOfChild(selectedView) - 2);
+                        parent.removeView(selectedView);
+                        buttonsBackgroundLayout.setVisibility(View.GONE);
+                    }
                     break;
             }
         }

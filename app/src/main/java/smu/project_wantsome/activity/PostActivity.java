@@ -158,7 +158,7 @@ public class PostActivity extends BasicActivity {
         ArrayList<String> contentsList = postInfo.getContents();
         for (int i=2; i<contentsList.size(); i++) {
             String contents = contentsList.get(i);
-            //if(Patterns.WEB_URL.matcher(contents).matches() && contents.contains("https://firebasestorage.googleapis.com/v0/b/project--wantsome.appspot.com/o/posts")) {
+            if(Patterns.WEB_URL.matcher(contents).matches() && contents.contains("https://firebasestorage.googleapis.com/v0/b/project--wantsome.appspot.com/o/posts")) {
                 successCount++;
                 StorageReference desertRef = storageRef.child("posts/"+id+"/"+storageUriToName(contents));
                 desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -173,7 +173,7 @@ public class PostActivity extends BasicActivity {
                         showToast(PostActivity.this, "ERROR");
                     }
                 });
-            //}
+            }
         }
         storeDelete(id);
     }

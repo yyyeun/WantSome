@@ -29,8 +29,7 @@ public class GalleyActivity extends BasicActivity {
         if (ContextCompat.checkSelfPermission(GalleyActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(GalleyActivity.this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    1);
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
             if (ActivityCompat.shouldShowRequestPermissionRationale(GalleyActivity.this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)) {
             } else {
