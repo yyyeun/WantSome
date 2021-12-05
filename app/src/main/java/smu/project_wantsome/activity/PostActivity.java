@@ -37,6 +37,7 @@ import smu.project_wantsome.R;
 public class PostActivity extends BasicActivity {
     private PostInfo postInfo;
     private int successCount;
+    private String address;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,7 @@ public class PostActivity extends BasicActivity {
         documentReference.get().addOnCompleteListener(task -> {
             DocumentSnapshot document = task.getResult();
             String text = (new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(postInfo.getCreatedAt())) + " | " + document.getData().get("address").toString();
+            address = document.getData().get("address").toString();
             createdAtTextView.setText(text);
         });
 
@@ -119,6 +121,13 @@ public class PostActivity extends BasicActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                return true;
+
+            case R.id.action_map:
+                Intent intent = new Intent(this, MapsActivity.class);
+                String location = address;
+                intent.putExtra("location", location);
+                startActivity(intent);
                 return true;
 
             case R.id.delete:

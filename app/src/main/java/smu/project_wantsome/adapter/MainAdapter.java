@@ -152,10 +152,10 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
                 String id = mDataSet.get(position).getId();
 
                 switch (menuItem.getItemId()) {
-                    case R.id.modify:
+                    case R.id.mainModify:
                         onPostListener.onModify(position);
                         return true;
-                    case R.id.delete:
+                    case R.id.mainDelete:
                         onPostListener.onDelete(position);
                         return true;
                     default:
@@ -164,7 +164,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
             }
         });
         MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.post, popup.getMenu());
+        inflater.inflate(R.menu.post_main, popup.getMenu());
         popup.show();
     }
 

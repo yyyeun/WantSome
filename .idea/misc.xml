@@ -8,6 +8,7 @@
         <entry key="..\:/Users/0602s/WantSome/app/src/main/res/layout/activity_gallery.xml" value="0.264" />
         <entry key="..\:/Users/0602s/WantSome/app/src/main/res/layout/activity_login.xml" value="0.10400000000000001" />
         <entry key="..\:/Users/0602s/WantSome/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/0602s/WantSome/app/src/main/res/layout/activity_maps.xml" value="0.1" />
         <entry key="..\:/Users/0602s/WantSome/app/src/main/res/layout/activity_member_init.xml" value="0.16" />
         <entry key="..\:/Users/0602s/WantSome/app/src/main/res/layout/activity_post.xml" value="0.264" />
         <entry key="..\:/Users/0602s/WantSome/app/src/main/res/layout/activity_write_post.xml" value="0.2" />
@@ -18,6 +19,10 @@
         <entry key="..\:/Users/0602s/WantSome/app/src/main/res/layout/view_loader.xml" value="0.1671875" />
         <entry key="..\:/Users/0602s/WantSome/app/src/main/res/layout/view_post.xml" value="0.1" />
         <entry key="..\:/Users/0602s/WantSome/app/src/main/res/layout/view_toolbar.xml" value="0.12512664640324214" />
+        <entry key="..\:/Users/0602s/WantSome/app/src/main/res/menu/main.xml" value="0.1" />
+        <entry key="..\:/Users/0602s/WantSome/app/src/main/res/menu/post.xml" value="0.2" />
+        <entry key="..\:/Users/0602s/WantSome/app/src/main/res/menu/postMain.xml" value="0.2490740740740741" />
+        <entry key="..\:/Users/0602s/WantSome/app/src/main/res/menu/post_main.xml" value="0.1" />
         <entry key="..\:/Users/0602s/WantSome/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.18333333333333332" />
         <entry key="..\:/Users/0602s/WantSome/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.18697916666666667" />
         <entry key="..\:/Users/0602s/WantSome/app/src/main/res/mipmap-anydpi-v26/ic_ws.xml" value="0.18697916666666667" />
