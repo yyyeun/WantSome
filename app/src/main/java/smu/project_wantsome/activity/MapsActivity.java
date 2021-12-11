@@ -45,7 +45,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Geocoder g = new Geocoder(MapsActivity.this);
         List<Address> address = null;
-        /*try {
+        try {
             address = g.getFromLocationName(location, 2);
         } catch (IOException e) {
             e.printStackTrace();
@@ -61,23 +61,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 lat = address.get(0).getLatitude();
                 lon = address.get(0).getLongitude();
             }
-        } else location = "서울";*/
-
-        try {
-            address = g.getFromLocationName(location, 2);
-        } catch (IOException e) {
-            e.printStackTrace();
-            location = "서울";
-            Log.d("test", "입출력오류");
-        }
-        if (address != null) {
-            Log.d("찾은 주소", address.get(0).toString());
-            lat = address.get(0).getLatitude();
-            lon = address.get(0).getLongitude();
-        } else {
-            Log.e("주소찾기 오류", "");
-            location = "서울";
-        }
+        } else location = "서울";
     }
 
     /**
