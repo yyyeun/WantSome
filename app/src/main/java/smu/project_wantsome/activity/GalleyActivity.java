@@ -76,7 +76,9 @@ public class GalleyActivity extends BasicActivity {
         uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         String[] projection = { MediaStore.MediaColumns.DATA, MediaStore.Images.Media.BUCKET_DISPLAY_NAME };
 
-        cursor = activity.getContentResolver().query(uri, projection, null, null, null);
+        String orderBy = MediaStore.Images.Media.DATE_TAKEN + " DESC";
+
+        cursor = activity.getContentResolver().query(uri, projection, null, null, orderBy);
 
         column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
         while (cursor.moveToNext()) {
